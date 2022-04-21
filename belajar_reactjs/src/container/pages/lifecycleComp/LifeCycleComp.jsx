@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Button } from "react-bootstrap";
+import { GlobalConsumer } from "../../../context/context";
 // import { connect } from "react-redux";
-import { RootContext } from "../../home/Home";
 
 class LifeCycleComp extends Component {
   constructor(props) {
@@ -20,11 +20,6 @@ class LifeCycleComp extends Component {
 
   componentDidMount() {
     console.log("componentDidMount");
-    // setTimeout(() => {
-    //   this.setState({
-    //     count: 2,
-    //   });
-    // }, 5000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -61,29 +56,17 @@ class LifeCycleComp extends Component {
   render() {
     console.log("render");
     return (
-      <RootContext.Consumer>
-        {(value) => {
-          return (
-            <Fragment>
-              <h1>LifeCycle Component</h1>
-              <hr />
-              <Button variant="primary" onClick={this.changeCount}>
-                {" "}
-                Component {this.state.count}
-              </Button>
-              <hr />
-              <p>Total Order: {value.state.totalOrder}</p>
-            </Fragment>
-          );
-        }}
-      </RootContext.Consumer>
+      <Fragment>
+        <h1>LifeCycle Component</h1>
+        <hr />
+        <Button variant="primary" onClick={this.changeCount}>
+          {" "}
+          Component {this.state.count}
+        </Button>
+        <hr />
+        <p>Total Order: {this.props.state.totalOrder}</p>
+      </Fragment>
     );
   }
 }
-// const mapStateToProps = (state) => {
-//   return {
-//     order: state.totalOrder,
-//   };
-// };
-// export default connect(mapStateToProps)(LifeCycleComp);
-export default LifeCycleComp;
+export default GlobalConsumer(LifeCycleComp);

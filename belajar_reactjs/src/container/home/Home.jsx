@@ -1,5 +1,5 @@
 //libraries
-import React, { Component, Fragment, createContext } from "react";
+import React, { Component, Fragment } from "react";
 
 //pages
 import { Container, Nav, Navbar, NavItem } from "react-bootstrap";
@@ -9,47 +9,13 @@ import LifeCycleComp from "../pages/lifecycleComp/LifeCycleComp";
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import YouTubeCompPage from "../pages/youTubeCompPage/YouTubeCompPage";
 import DetailPost from "../pages/blogPost/detailPost/DetailPost";
+import GlobalProvider from "../../context/context";
+import Hooks from "../pages/hooks/Hooks";
 
-export const RootContext = createContext();
-const Provider = RootContext.Provider;
-
-export default class Home extends Component {
-  componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState({
-    //     showComponent: false,
-    //   });
-    // }, 15000);
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showComponent: true,
-      totalOrder: 0,
-    };
-  }
-
-  dispatch = (action) => {
-    if (action.type === "PLUS_ORDER") {
-      return this.setState({
-        totalOrder: this.state.totalOrder + 1,
-      });
-    }
-    if (action.type === "MINUS_ORDER") {
-      return this.setState({
-        totalOrder: this.state.totalOrder - 1,
-      });
-    }
-  };
+class Home extends Component {
   render() {
     return (
       <Router>
-        <Provider value={{
-          state: this.state,
-          dispatch: this.dispatch
-        }}>
           <Fragment>
             <div>
               <Navbar color="dark" expand="md" className="bg-info">
@@ -75,6 +41,11 @@ export default class Home extends Component {
                         Youtube
                       </NavLink>
                     </NavItem>
+                    <NavItem>
+                      <NavLink to="/hooks" className="nav-link">
+                       Hooks
+                      </NavLink>
+                    </NavItem>
                   </Nav>
                 </Container>
               </Navbar>
@@ -86,11 +57,12 @@ export default class Home extends Component {
                 <Route exact path="/product" element={<Product />} />
                 <Route exact path="/lifecycle" element={<LifeCycleComp />} />
                 <Route exact path="/youtube-component" element={<YouTubeCompPage />} />
+                <Route exact path="/hooks" element={<Hooks />} />
               </Routes>
             </Container>
           </Fragment>
-        </Provider>
       </Router>
     );
   }
 }
+export default GlobalProvider(Home);

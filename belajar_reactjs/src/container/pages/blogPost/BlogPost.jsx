@@ -1,7 +1,7 @@
-import axios from "axios";
-import React, { Component, Fragment,Redirect } from "react";
+import React, { Component, Fragment } from "react";
 import { Form, Button } from "react-bootstrap";
 import Post from "../../../component/post/Post";
+import API from "../../../service";
 
 export default class BlogPost extends Component {
   constructor(props) {
@@ -20,33 +20,25 @@ export default class BlogPost extends Component {
   }
 
   getPostAPI = () => {
-    // Memangil Api menggunakan Axios
-    axios.get("http://localhost:3001/posts?_sort=id&_order=desc").then((res) => {
-      console.log(res);
+    API.getNewsBlog().then((result) => {
       this.setState({
-        post: res.data,
+        post: result,
       });
     });
   };
 
   postDataToAPI = () => {
-    axios.post("http://localhost:3001/posts", this.state.formBlogPost).then(
-      (resp) => {
-        console.log(resp);
-        this.getPostAPI();
-        this.setState({
-          formBlogPost: {
-            id: 1,
-            title: "",
-            body: "",
-            userId: 1,
-          },
-        });
-      },
-      (err) => {
-        console.log("error : ", err);
-      }
-    );
+    API.postNewsBlog(this.state.formBlogPost).then((resp) => {
+      this.getPostAPI();
+      this.setState({
+        formBlogPost: {
+          id: 1,
+          title: "",
+          body: "",
+          userId: 1,
+        },
+      });
+    });
   };
 
   componentDidMount() {
@@ -73,28 +65,25 @@ export default class BlogPost extends Component {
     }
   };
 
-
   handleRemove = (dataId) => {
-    axios.delete(`http://localhost:3001/posts/${dataId}`).then((res) => {
+    API.deleteNewsBlog(dataId).then((resp) => {
       this.getPostAPI();
-    });
+    })
   };
 
   putDataToAPI = () => {
-    axios
-      .put(`http://localhost:3001/posts/${this.state.formBlogPost.id}`, this.state.formBlogPost)
-      .then((resp) => {
-        this.getPostAPI();
-        this.setState({
-          isUpdate: false,
-          formBlogPost: {
-            id: 1,
-            title: "",
-            body: "",
-            userId: 1,
-          },
-        });
+    API.updateNewsBlog(this.state.formBlogPost, this.state.formBlogPost.id).then((resp) => {
+      this.getPostAPI();
+      this.setState({
+        isUpdate: false,
+        formBlogPost: {
+          id: 1,
+          title: "",
+          body: "",
+          userId: 1,
+        },
       });
+    });
   };
 
   handleUpdate = (dataId) => {
@@ -140,12 +129,7 @@ export default class BlogPost extends Component {
         </Form>
         {this.state.post.map((post) => {
           return (
-            <Post
-              key={post.id}
-              data={post}
-              remove={this.handleRemove}
-              update={this.handleUpdate}
-            />
+            <Post key={post.id} data={post} remove={this.handleRemove} update={this.handleUpdate} />
           );
         })}
       </Fragment>
